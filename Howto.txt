@@ -1,0 +1,94 @@
+﻿Coastline Digitizer v1.0
+Henok Kefelegn | henok@lsu.edu | hmyr12@yahoo.com
+
+.................................................
+This tool uses a hybrid remote sensing and image-processing technique for coastline/shoreline extraction. The automated algorithm is constructed for shoreline digitization and morphological operation. The tool makes mesh construction and hydrodynamic modeling more efficient. The technique involves adaptive thresholding of near infrared band imagery. The image processing facilitates the morphological adjustment of binary images to produce a 2D geometry and thereby yields a highly efficient, automatic, accurate, precise and mesh-ready digital image input. Furthermore, the conversion of shoreline features from remote sensing imagery to digital format eliminates the need for post-extraction shoreline correction and reduces the error in shoreline feature extraction, making the new technique very versatile for hydrodynamic and environmental modeling.   
+Input data
+
+The automatic shoreline digitization process starts with importing and storing Remote Sensing Imagery data. 
+User is required to have a 4-band Infrared Georeferenced Image in .TIF and .TFW formats saved along with the toolbox (CLD) in Images folder.
+Image files (.TIF and .TFW) need to saved under Images folder.
+
+Graphical user interface of the shoreline extraction process helps the user to set the parameters.
+Data type should be 1 if Imagery data is used.
+Default file directory name for the image data is "Images". User need to save images as Image1.tif, Image1.tfw ...in Images folder.
+More than one images can be executed by entering image numbers as 1:1:n
+User need to set threshold pixel length and areas that need to be excluded from analysis.
+Initial resolution in pixels is set for the initial digitization.
+Minimum creek width in pixels removes all creeks that are below Minimum creek width wide.
+[Minimum creek width to be widen , Widen creek Width] sets the range of the creek widths that need to be widened to a Widen Creek width.
+Once the process is completed all results are saved in Images folder as Result1, Result2,… corresponding to Image1, Image 2,… respectively.
+ 
+First sets of results are saved in Results folder for each images.
+------------------------------------------------------------------
+Initial_Binary_Image.tif : Unprocessed binary image with all noises. Initial binary Image corresponding to end product of Initial binary image algorithm. 
+Inter_Binary_Image.tif : Processed (cleaned, filtered) intermediate binary image. 
+Secondary_Binary_Image.tif : Initial binary Image (cleaned, filtered) corresponding to end product of MO1 algorithm. 
+IR_Image.tif : False color image 
+Validation_Image.tif : shows the user how the digitized coastline looks like on top of the false color image. 
+Secondary_Binary_Image.csv : Coastlines in csv format. Readable in ArcGIS/SMS. To read in ArcGIS use XY to line tool that creates a new feature constructed based on the values in a start x-coordinate field, start y-coordinate field, end x-coordinate field, and end y-coordinate field of a table. Users are refered to https://support.esri.com/en/technical-article/000012092 for more information how to use XY to Line tool.
+
+Second sets of results are saved in Adjust folder for each images.
+------------------------------------------------------------------
+Adjusted_Binary_Image.tif : Adjusted binary Image corresponding to end product of MO2 algorithm. 
+Adjusted_Validation_Image.tif : shows the user how the digitized coastline looks like on top of the false color image. 
+Adjusted_Validation_Image.csv : Coastlines in csv format. Readable in ArcGIS/SMS. To read in ArcGIS use XY to line tool that creates a new feature constructed based on the values in a start x-coordinate field, start y-coordinate field, end x-coordinate field, and end y-coordinate field of a table. Users are refered to https://support.esri.com/en/technical-article/000012092 for more information how to use XY to Line tool.
+ 
+Final and third sets of results are saved in Wide folder for each images.
+-------------------------------------------------------------------------
+Widened_Validation_Image.tif : Adjusted and widened binary Image corresponding to end product of MO3 algorithm. 
+Widened_Validation_Image.tif : shows the user how the digitized coastline looks like on top of the false color image. 
+Widened_Validation_Image.csv : Coastlines in csv format. Readable in ArcGIS/SMS. To read in ArcGIS use XY to line tool that creates a new feature constructed based on the values in a start x-coordinate field, start y-coordinate field, end x
+-------------------------------------------------------------------------
+Note: all measurement units are in pixels. 
+      Example: if pixel size is 0.6m x 0.6m, Creek width of 30 m is 30/0.6 = 50 pixel width.
+
+Visualizing Results:
+-----------------------
+
+The best way to analyze/visualize result is using ArcMap (Esri's ArcGIS program) or SMS (Surface Water Solution). User may also use similar other programs.
+
+For a quick visualization I have included a small app called VisualizeCLDimages. 
+You may also use tools like 
+https://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer
+Or execute matlab script I wrote below that uses imtool.
+------------------------------------
+function visualizewithimtool
+dlgTitle    = 'Visualization tool';
+dlgQuestion = 'Do you want to visualize binary image over false color image??';
+ans2 = questdlg(dlgQuestion,dlgTitle,'Yes','No', 'Yes');
+if sum((ans2))==305;
+[file1,path1] = uigetfile('*.tif');  
+str2num(char(regexp(file1,'\d*','Match')));
+[C,matches] = strsplit(path1,'Result',...
+    'DelimiterType','RegularExpression')
+path2=[C{1,1},'Result',char(regexp(file1,'\d*','Match')),'\'];
+file2=['IR_Image',char(regexp(file1,'\d*','Match')),'.tif'];
+RGB_image=imread([path2,file2]);
+bw_image=bwmorph(imread([path1,file1]),'remove');
+result=imfuse(RGB_image,bw_image);
+f=imtool(result);
+waitfor(f)
+visualizewithimtool
+end
+function visualizewithimtool
+dlgTitle    = 'Visualization tool';
+dlgQuestion = 'Do you want to visualize binary image over false color image??';
+ans2 = questdlg(dlgQuestion,dlgTitle,'Yes','No', 'Yes');
+if sum((ans2))==305;
+[file1,path1] = uigetfile('*.tif');  
+str2num(char(regexp(file1,'\d*','Match')));
+[C,matches] = strsplit(path1,'Result',...
+    'DelimiterType','RegularExpression')
+path2=[C{1,1},'Result',char(regexp(file1,'\d*','Match')),'\'];
+file2=['IR_Image',char(regexp(file1,'\d*','Match')),'.tif'];
+RGB_image=imread([path2,file2]);
+bw_image=bwmorph(imread([path1,file1]),'remove');
+result=imfuse(RGB_image,bw_image);
+f=imtool(result);
+waitfor(f)
+visualizewithimtool
+end
+end
+end
+-----------------------------
