@@ -1,4 +1,4 @@
-﻿Coastline Digitizer v1.0
+﻿ShorelineDigitizer v1.0
 Henok Kefelegn | henok@lsu.edu | hmyr12@yahoo.com
 
 .................................................
@@ -47,7 +47,7 @@ Visualizing Results:
 -----------------------
 
 The best way to analyze/visualize result is using ArcMap (Esri's ArcGIS program) or SMS (Surface Water Solution). User may also use similar other programs.
-
+You may also use QGIS, a free and Open Source Geographic Information System. https://www.qgis.org/en/site/
 For a quick visualization I have included a small app called VisualizeCLDimages. 
 You may also use tools like 
 https://www.mathworks.com/matlabcentral/fileexchange/13000-imageviewer
